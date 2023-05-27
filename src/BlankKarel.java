@@ -9,6 +9,9 @@ import stanford.karel.*;
 
 public class BlankKarel extends SuperKarel {
 
+    int totalNumberOfMoves = 0;
+    int totalNumberOfBeepers = 0;
+
     public int calculateWidth() {
         int width = 1;
         while (frontIsClear()) {
@@ -82,233 +85,135 @@ public class BlankKarel extends SuperKarel {
         }
     }
 
-    public void fillEvenAndReturn(int numberOfMoves, boolean turnLeftOrRight) {
+    public void fillEvenAndReturn(int numberOfMoves) {
+
         moveWithBeeper(numberOfMoves, false);
-        if (turnLeftOrRight) {
-            turnLeft();
-        } else {
-            turnRight();
-        }
+
+        turnLeft();
         move();
-        if (turnLeftOrRight) {
-            turnLeft();
-        } else {
-            turnRight();
-        }
+        turnLeft();
+
+//        if (facingNorth()) {
+//            turnLeft();
+//            move();
+//            turnLeft();
+//        } else if (facingSouth()) {
+//            turnRight();
+//            move();
+//            turnRight();
+//        } else { //if (facingEast())
+//            turnLeft();
+//            move();
+//            turnLeft();
+//        }
+
         moveWithBeeper(numberOfMoves, true);
     }
 
     public void moveWithBeeper(int numberOfMoves, boolean preBeeper) {
 
-        if (preBeeper) putBeeper();
+        if (preBeeper) {
+            putBeeper();
+            totalNumberOfBeepers++;
+        }
 
         while (numberOfMoves-- > 0) {
             move();
-            putBeeper();
-
+            totalNumberOfMoves++;
+            if (noBeepersPresent()) {
+                putBeeper();
+                totalNumberOfBeepers++;
+            }
         }
     }
 
     public void moveWithoutBeeper(int numberOfMoves) {
         while (numberOfMoves-- > 0) {
             move();
+            totalNumberOfMoves++;
         }
     }
 
-
-
-    public void evenWidthEvenLength(int movesToReachHalfWidth, int movesToReachHalfLength) {
-        turnAround();
-        moveWithoutBeeper(movesToReachHalfLength);
-        fillEvenZigZagHorizontally(movesToReachHalfWidth);
-
-        fillEvenAndReturn(movesToReachHalfLength, false);
-
+    public void goToStart(int width, int length, int boxSideLength) {
         turnLeft();
-        fillEvenAndReturn(movesToReachHalfWidth, false);
-
+        moveWithoutBeeper((int) Math.ceil((width - boxSideLength) / 2.0));
         turnLeft();
-        fillEvenAndReturn(movesToReachHalfLength, false);
-
-        pickBeeper();
+        moveWithoutBeeper((int) Math.ceil((length - boxSideLength) / 2.0));
     }
 
-    public void evenWidthOddLength(int movesToReachHalfWidth, int movesToReachHalfLength) {
-        turnAround();
-        moveWithoutBeeper(movesToReachHalfLength);
+    public void evenAndEven(int width, int length, int boxSideLength) {
 
-        turnRight();
-        moveWithBeeper(movesToReachHalfWidth, true);
+        int outOfBoxWidthEachSide = (width - boxSideLength) / 2;
+        int outOfBoxLengthEachSide = (length - boxSideLength) / 2;
+        int halfBoxSideLength = boxSideLength / 2;
 
+        //After goToStart
+        moveWithBeeper(halfBoxSideLength, true);
         turnLeft();
-        fillEvenAndReturn(movesToReachHalfLength, false);
-
-        fillEvenAndReturn(movesToReachHalfLength, false);
-
-        pickBeeper();
-
+        //first out of box
+        fillEvenAndReturn(outOfBoxWidthEachSide);
+        // to the opposite side
+        moveWithBeeper(boxSideLength - 1, false);
+        //second out of box width
+        fillEvenAndReturn(outOfBoxWidthEachSide);
+        turnLeft();
+        // going up
+        moveWithBeeper(halfBoxSideLength, false);
         turnRight();
-        move();
+        //going to the middle
+        moveWithBeeper(halfBoxSideLength, false);
+        turnLeft();
+        //Up center out of box
+        fillEvenAndReturn(outOfBoxLengthEachSide);
+        // going to the bottom
+        moveWithBeeper(boxSideLength - 1, false);
+        //Down center out of box
+        fillEvenAndReturn(outOfBoxLengthEachSide);
+        turnLeft();
+        // going left
+        moveWithBeeper(halfBoxSideLength,false);
+        turnRight();
 
-        moveWithBeeper(movesToReachHalfWidth, false);
-
+        moveWithBeeper(halfBoxSideLength - 1, false);
+        turnRight();
+        moveWithBeeper(boxSideLength - 1,false);
+        turnRight();
+        moveWithBeeper(halfBoxSideLength - 1, false);
+        turnRight();
+        moveWithBeeper(halfBoxSideLength - 1, false);
+        turnRight();
+        moveWithBeeper(boxSideLength - 1, false);
+        turnRight();
+        moveWithBeeper(halfBoxSideLength - 1, false);
     }
-
-    public void oddWidthEvenLength(int movesToReachHalfWidth, int movesToReachHalfLength) {
-
-        turnAround();
-        moveWithoutBeeper(movesToReachHalfLength);
-
-        fillEvenZigZagHorizontally(movesToReachHalfWidth);
-
-        fillOddAndReturn(movesToReachHalfLength);
-
-        turnLeft();
-
-        fillEvenAndReturn(movesToReachHalfWidth, false);
-
-        pickBeeper();
-
-        turnLeft();
-
-        moveWithBeeper(movesToReachHalfLength, false);
-
-
-    }
-
-    public void oddWidthOddLength(int movesToReachHalfWidth, int movesToReachHalfLength) {
-
-        turnAround();
-        moveWithoutBeeper(movesToReachHalfLength);
-
-        turnRight();
-
-        moveWithBeeper(movesToReachHalfWidth, true);
-
-        turnLeft();
-        fillOddAndReturn(movesToReachHalfLength);
-
-        fillOddAndReturn(movesToReachHalfLength);
-
-        turnRight();
-
-        moveWithBeeper(movesToReachHalfWidth, false);
-    }
-
-    public void evenLengthEvenWidth(int movesToReachHalfWidth, int movesToReachHalfLength) {
-        turnLeft();
-        moveWithoutBeeper(movesToReachHalfWidth);
-
-        fillEvenZigZagVertically(movesToReachHalfLength);
-        fillEvenAndReturn(movesToReachHalfWidth, true);
-
-        turnRight();
-        fillEvenAndReturn(movesToReachHalfLength, true);
-
-        turnRight();
-        fillEvenAndReturn(movesToReachHalfWidth, true);
-        pickBeeper();
-    }
-
-    public void evenLengthOddWidth(int movesToReachHalfWidth, int movesToReachHalfLength) {
-
-        turnLeft();
-        moveWithoutBeeper(movesToReachHalfWidth);
-
-        fillEvenZigZagVertically(movesToReachHalfLength);
-
-        fillOddAndReturn(movesToReachHalfWidth);
-
-        move();
-
-        fillOddAndReturn(movesToReachHalfWidth);
-
-        turnRight();
-
-        fillEvenAndReturn(movesToReachHalfLength, true);
-
-        pickBeeper();
-    }
-
-    public void oddLengthOddWidth(int movesToReachHalfWidth, int movesToReachHalfLength) {
-
-        turnLeft();
-        moveWithoutBeeper(movesToReachHalfWidth);
-
-        turnLeft();
-        moveWithBeeper(movesToReachHalfLength, true);
-
-        turnLeft();
-        fillOddAndReturn(movesToReachHalfWidth);
-
-        fillOddAndReturn(movesToReachHalfWidth);
-
-        turnRight();
-
-        moveWithBeeper(movesToReachHalfLength, false);
-    }
-
-    public void oddLengthEvenWidth(int movesToReachHalfWidth, int movesToReachHalfLength) {
-
-        turnLeft();
-        moveWithoutBeeper(movesToReachHalfWidth);
-
-        turnLeft();
-        moveWithBeeper(movesToReachHalfLength, true);
-
-        turnLeft();
-
-        fillEvenAndReturn(movesToReachHalfWidth, false);
-        fillEvenAndReturn(movesToReachHalfWidth, false);
-
-        pickBeeper();
-        turnRight();
-        move();
-
-        moveWithBeeper(movesToReachHalfLength, false);
-    }
-
-    public void divide4Equals(int width, int length) {
-        boolean widthIsEven = width % 2 == 0;
-        boolean lengthIsEven = length % 2 == 0;
-
-        int movesToReachHalfWidth = widthIsEven ? width / 2 - 1 : width / 2;
-        int movesToReachHalfLength = lengthIsEven ? length / 2 - 1 : length / 2;
-
-
-        if (movesToReachHalfWidth > movesToReachHalfLength) {
-            if (widthIsEven && lengthIsEven) { // 14x12
-                evenWidthEvenLength(movesToReachHalfWidth, movesToReachHalfLength);
-            } else if (widthIsEven) { // 14x11
-                evenWidthOddLength(movesToReachHalfWidth, movesToReachHalfLength);
-            } else if (lengthIsEven) { // 13 x 10
-                oddWidthEvenLength(movesToReachHalfWidth, movesToReachHalfLength);
-            } else { // 13 x 7
-                oddWidthOddLength(movesToReachHalfWidth, movesToReachHalfLength);
-            }
-        } else {
-            if (widthIsEven && lengthIsEven) { // 12x14
-                evenLengthEvenWidth(movesToReachHalfWidth, movesToReachHalfLength);
-            } else if (widthIsEven) { // 10x13
-                evenLengthOddWidth(movesToReachHalfWidth, movesToReachHalfLength);
-            } else if (lengthIsEven) { //9x12
-                oddLengthEvenWidth(movesToReachHalfWidth, movesToReachHalfLength);
-            } else { // 9x13
-                oddLengthOddWidth(movesToReachHalfWidth, movesToReachHalfLength);
-            }
-        }
-
-
-    }
-
 
     public void run() {
 
         int width = calculateWidth();
         int length = calculateLength();
+
+        boolean isWidthEven = width % 2 == 0;
+        boolean isLengthEven = length % 2 == 0;
+
+        int halfWidth = isWidthEven ? width / 2 - 1 : width / 2;
+        int halfLength = isLengthEven ? length / 2 - 1 : length / 2;
+
+        int boxSideLength = Math.min(width - 2, length - 2);
+
+
+        int halfBoxSideLength = boxSideLength / 2;
+
         System.out.println("Width = " + width);
         System.out.println("Length = " + length);
-        divide4Equals(width, length);
+        System.out.println("Box Side Length = " + boxSideLength);
+
+
+        goToStart(width, length, boxSideLength);
+
+        evenAndEven(width, length, boxSideLength);
+
+        System.out.println("Total number of placed Beepers = " + totalNumberOfBeepers);
+        System.out.println("Total number of Moves = " + totalNumberOfMoves);
 
 
     }
