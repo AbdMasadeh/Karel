@@ -14,6 +14,7 @@ public class Homework extends SuperKarel {
     int halfBoxSideLength;
     int widthOutOfBoxEachSide;
     int lengthOutOfBoxEachSide;
+    int movesToReachStartPoint;
     boolean showRepeatedPoints = true;
 
     public void calculateWidth() {
@@ -65,11 +66,12 @@ public class Homework extends SuperKarel {
         moveWithBeeper(numberOfMovesAfterTurning, true);
     }
 
-    public void goToStartPoint() {
+    public void goToEvenEvenStartPoint() {
+        movesToReachStartPoint = widthOutOfBoxEachSide + lengthOutOfBoxEachSide - 1;
         turnLeft();
-        moveWithoutBeeper((width - boxSideLength) / 2);
+        moveWithoutBeeper(widthOutOfBoxEachSide);
         turnLeft();
-        moveWithoutBeeper((length - boxSideLength) / 2);
+        moveWithoutBeeper(lengthOutOfBoxEachSide);
     }
 
     public void temp1(int outOfBoxEachSide, boolean preBeeper) {
@@ -92,7 +94,7 @@ public class Homework extends SuperKarel {
     }
 
     public void evenWithEven() {
-        goToStartPoint();
+        goToEvenEvenStartPoint();
 
         boolean preBeeper = true;
         int outOfBoxEachSide = widthOutOfBoxEachSide;
@@ -110,7 +112,8 @@ public class Homework extends SuperKarel {
         moveWithBeeper(halfBoxSideLength - 1, false);
     }
 
-    public void oddWithOdd() {}
+    public void oddWithOdd() {
+    }
 
     public void fillBoxSide(boolean halfBox, int turn) {
         int numberOfMoves = halfBox ? boxSideLength / 2
@@ -185,6 +188,7 @@ public class Homework extends SuperKarel {
         length = 1;
         totalNumberOfBeepers = 0;
         totalNumberOfMoves = 0;
+        movesToReachStartPoint = 0;
 
         calculateWidth();
         calculateLength();
@@ -214,6 +218,7 @@ public class Homework extends SuperKarel {
         }
 
         System.out.println("Total number of placed Beepers = " + totalNumberOfBeepers);
-        System.out.println("Total number of Moves = " + totalNumberOfMoves);
+        System.out.println("Total number of Moves = " + (totalNumberOfMoves - movesToReachStartPoint));
+        System.out.println("Total number of moves to reach the Start point = " + movesToReachStartPoint);
     }
 }
