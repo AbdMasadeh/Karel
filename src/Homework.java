@@ -12,6 +12,8 @@ public class Homework extends SuperKarel {
     boolean isLengthEven;
     int boxSideLength;
     int halfBoxSideLength;
+    int halfWidth;
+    int halfLength;
     int widthOutOfBoxEachSide;
     int lengthOutOfBoxEachSide;
     int movesToReachStartPoint;
@@ -57,6 +59,12 @@ public class Homework extends SuperKarel {
         }
     }
 
+    public void fillOddAndReturn(int numberOfMovesBeforeTurning, int numberOfMovesAfterTurning) {
+        moveWithBeeper(numberOfMovesBeforeTurning, false);
+        turnAround();
+        moveWithoutBeeper(numberOfMovesAfterTurning);
+    }
+
     public void fillEvenAndReturn(int numberOfMovesBeforeTurning, int numberOfMovesAfterTurning) {
         moveWithBeeper(numberOfMovesBeforeTurning, false);
         turnLeft();
@@ -74,20 +82,20 @@ public class Homework extends SuperKarel {
         moveWithoutBeeper(lengthOutOfBoxEachSide);
     }
 
-    public void temp1(int outOfBoxEachSide, boolean preBeeper) {
+    public void evenEvenFirstPattern(int outOfBoxEachSide, boolean preBeeper) {
         moveWithBeeper(halfBoxSideLength + 1, preBeeper);
         turnLeft();
         fillEvenAndReturn(outOfBoxEachSide, outOfBoxEachSide + boxSideLength);
     }
 
-    public void temp2(int outOfBoxEachSide) {
+    public void evenEvenSecondPattern(int outOfBoxEachSide) {
         fillEvenAndReturn(outOfBoxEachSide, outOfBoxEachSide);
         turnLeft();
         moveWithBeeper(halfBoxSideLength + 1, false);
         turnRight();
     }
 
-    public void temp3(int turn) {
+    public void evenEvenThirdPattern(int turn) {
         int numberOfMoves = turn == 1 || turn == 4 ? boxSideLength : halfBoxSideLength;
         moveWithBeeper(numberOfMoves, false);
         turnRight();
@@ -100,22 +108,68 @@ public class Homework extends SuperKarel {
         int outOfBoxEachSide = widthOutOfBoxEachSide;
 
         for (int i = 0; i < 2; i++) {
-            temp1(outOfBoxEachSide, preBeeper);
-            temp2(outOfBoxEachSide);
+            evenEvenFirstPattern(outOfBoxEachSide, preBeeper);
+            evenEvenSecondPattern(outOfBoxEachSide);
 
             preBeeper = !preBeeper;
             outOfBoxEachSide = lengthOutOfBoxEachSide;
         }
         for (int i = 0; i < 5; i++) {
-            temp3(i);
+            evenEvenThirdPattern(i);
         }
         moveWithBeeper(halfBoxSideLength - 1, false);
     }
 
     public void oddWithOdd() {
+        int firstHalf;
+        int secondHalf;
+
+        int firstOutOfBox;
+        int secondOutOfBox;
+
+        if (width > length) {
+            firstHalf = halfLength;
+            secondHalf = halfWidth;
+            firstOutOfBox = widthOutOfBoxEachSide;
+            secondOutOfBox = lengthOutOfBoxEachSide;
+
+            turnAround();
+            moveWithoutBeeper(halfLength);
+            turnRight();
+        } else {
+            firstHalf = halfWidth;
+            secondHalf = halfLength;
+            firstOutOfBox = lengthOutOfBoxEachSide;
+            secondOutOfBox = widthOutOfBoxEachSide;
+
+            turnLeft();
+            moveWithoutBeeper(halfWidth);
+            turnLeft();
+        }
+        movesToReachStartPoint = firstHalf - 1;
+
+        moveWithBeeper(firstOutOfBox, true);
+
+        turnRight();
+
+        boolean halfBox = true;
+        for (int i = 0; i < 5; i++) {
+            fillBoxSides(halfBox, 2);
+            if (i == 0 || i == 3) halfBox = !halfBox;
+        }
+
+        moveWithBeeper(halfBoxSideLength, false);
+        turnRight();
+
+        for (int i = 0; i < 2; i++) {
+            fillOddAndReturn(halfBoxSideLength + secondOutOfBox,
+                    halfBoxSideLength + secondOutOfBox);
+        }
+        turnLeft();
+        moveWithBeeper(secondHalf, false);
     }
 
-    public void fillBoxSide(boolean halfBox, int turn) {
+    public void fillBoxSides(boolean halfBox, int turn) {
         int numberOfMoves = halfBox ? boxSideLength / 2
                 : turn != 2 ? boxSideLength
                 : boxSideLength - 1;
@@ -124,10 +178,6 @@ public class Homework extends SuperKarel {
     }
 
     public void oddWithEven() {
-
-        int halfWidth = width / 2;
-        int halfLength = length / 2;
-
         int firstHalf;
         int secondHalf;
 
@@ -137,26 +187,23 @@ public class Homework extends SuperKarel {
         if (isWidthEven) {
             firstHalf = halfLength;
             secondHalf = halfWidth;
-
             firstOutOfBox = widthOutOfBoxEachSide;
             secondOutOfBox = lengthOutOfBoxEachSide;
+
+            turnAround();
+            moveWithoutBeeper(halfLength);
+            turnRight();
         } else {
             firstHalf = halfWidth;
             secondHalf = halfLength;
-
             firstOutOfBox = lengthOutOfBoxEachSide;
             secondOutOfBox = widthOutOfBoxEachSide;
-        }
 
-        if (isWidthEven) {
-            turnAround();
-            moveWithoutBeeper(firstHalf);
-            turnRight();
-        } else {
             turnLeft();
-            moveWithoutBeeper(firstHalf);
+            moveWithoutBeeper(halfWidth);
             turnLeft();
         }
+        movesToReachStartPoint = firstHalf - 1;
 
         moveWithBeeper(firstOutOfBox, true);
 
@@ -165,7 +212,7 @@ public class Homework extends SuperKarel {
         boolean halfBox = true;
 
         for (int i = 0; i < 5; i++) {
-            fillBoxSide(halfBox, i);
+            fillBoxSides(halfBox, i);
             if (i == 0 || i == 3) halfBox = !halfBox;
         }
 
@@ -200,6 +247,8 @@ public class Homework extends SuperKarel {
                 isLengthEven ? length - 3 : length - 2);
 
         halfBoxSideLength = boxSideLength / 2;
+        halfWidth = width / 2;
+        halfLength = length / 2;
 
         widthOutOfBoxEachSide = (width - boxSideLength) / 2;
         lengthOutOfBoxEachSide = (length - boxSideLength) / 2;
