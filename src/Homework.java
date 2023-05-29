@@ -240,6 +240,9 @@ public class Homework extends SuperKarel {
         calculateWidth();
         calculateLength();
 
+        if (width < 7) throw new DimensionsTooSmallException("width");
+        if (length < 7) throw new DimensionsTooSmallException("length");
+
         isWidthEven = width % 2 == 0;
         isLengthEven = length % 2 == 0;
 
