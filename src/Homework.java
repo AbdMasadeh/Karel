@@ -19,7 +19,6 @@ public class Homework extends SuperKarel {
     int movesToReachStartPoint;
     int firstHalf;
     int secondHalf;
-
     int firstOutOfBox;
     int secondOutOfBox;
     boolean showRepeatedPoints = true;
@@ -138,9 +137,7 @@ public class Homework extends SuperKarel {
     }
 
     public void fillBoxSides(boolean halfBox, int turn) {
-        int numberOfMoves = halfBox ? boxSideLength / 2
-                : turn != 2 ? boxSideLength
-                : boxSideLength - 1;
+        int numberOfMoves = halfBox ? boxSideLength / 2 : turn != 2 ? boxSideLength : boxSideLength - 1;
         moveWithBeeper(numberOfMoves, false);
         turnLeft();
     }
@@ -182,8 +179,7 @@ public class Homework extends SuperKarel {
         turnRight();
 
         for (int i = 0; i < 2; i++) {
-            fillOddAndReturn(halfBoxSideLength + secondOutOfBox,
-                    halfBoxSideLength + secondOutOfBox);
+            fillOddAndReturn(halfBoxSideLength + secondOutOfBox, halfBoxSideLength + secondOutOfBox);
         }
         turnLeft();
         moveWithBeeper(secondHalf, false);
@@ -204,8 +200,7 @@ public class Homework extends SuperKarel {
         moveWithBeeper(halfBoxSideLength, false);
         turnRight();
         for (int i = 0; i < 2; i++) {
-            fillEvenAndReturn(halfBoxSideLength + secondOutOfBox,
-                    halfBoxSideLength + secondOutOfBox);
+            fillEvenAndReturn(halfBoxSideLength + secondOutOfBox, halfBoxSideLength + secondOutOfBox);
         }
         turnLeft();
         moveWithBeeper(secondHalf, false);
@@ -230,8 +225,7 @@ public class Homework extends SuperKarel {
         isWidthEven = width % 2 == 0;
         isLengthEven = length % 2 == 0;
 
-        boxSideLength = Math.min(isWidthEven ? width - 3 : width - 2,
-                isLengthEven ? length - 3 : length - 2);
+        boxSideLength = Math.min(isWidthEven ? width - 3 : width - 2, isLengthEven ? length - 3 : length - 2);
 
         halfBoxSideLength = boxSideLength / 2;
         halfWidth = width / 2;
@@ -253,7 +247,6 @@ public class Homework extends SuperKarel {
         }
         System.out.println("Total number of placed Beepers = " + totalNumberOfBeepers);
         System.out.println("Total number of Moves = " + (totalNumberOfMoves - movesToReachStartPoint));
-        System.out.println("Total number of moves to reach the Start point = " +
-                movesToReachStartPoint + "\n");
+        System.out.println("Total number of moves to reach the Start point = " + movesToReachStartPoint + "\n");
     }
 }
