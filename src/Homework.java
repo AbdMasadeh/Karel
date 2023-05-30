@@ -2,36 +2,31 @@ import stanford.karel.SuperKarel;
 
 import java.awt.*;
 
-
 public class Homework extends SuperKarel {
-    int totalNumberOfMoves;
-    int totalNumberOfBeepers;
-    int width;
-    int length;
-    boolean isWidthEven;
-    boolean isLengthEven;
-    int boxSideLength;
-    int halfBoxSideLength;
-    int halfWidth;
-    int halfLength;
-    int widthOutOfBoxEachSide;
-    int lengthOutOfBoxEachSide;
-    int movesToReachStartPoint;
-    int firstHalf;
-    int secondHalf;
-    int firstOutOfBox;
-    int secondOutOfBox;
-    boolean showRepeatedPoints = true;
+    private int totalNumberOfMoves;
+    private int totalNumberOfBeepers;
+    private int width;
+    private int length;
+    private boolean isWidthEven;
+    private int boxSideLength;
+    private int halfBoxSideLength;
+    private int halfWidth;
+    private int halfLength;
+    private int widthOutOfBoxEachSide;
+    private int lengthOutOfBoxEachSide;
+    private int movesToReachStartPoint;
+    private int firstHalf;
+    private int secondHalf;
+    private int firstOutOfBox;
+    private int secondOutOfBox;
+    private boolean showRepeatedPoints = false;
 
-    public void calculateWidth() {
+    public void getDimensions() {
         while (frontIsClear()) {
             move();
             width++;
         }
         turnLeft();
-    }
-
-    public void calculateLength() {
         while (frontIsClear()) {
             move();
             length++;
@@ -105,7 +100,6 @@ public class Homework extends SuperKarel {
         turnRight();
     }
 
-
     public void goToHalfWidth() {
         turnAround();
         moveWithoutBeeper(halfLength);
@@ -142,7 +136,7 @@ public class Homework extends SuperKarel {
         turnLeft();
     }
 
-    public void evenWithEven() {
+    public void divideEvenWithEvenMap() {
         goToEvenEvenStartPoint();
 
         boolean preBeeper = true;
@@ -161,7 +155,7 @@ public class Homework extends SuperKarel {
         moveWithBeeper(halfBoxSideLength - 1, false);
     }
 
-    public void oddWithOdd() {
+    public void divideOddWithOddMap() {
         initializeVariable(width > length);
         movesToReachStartPoint = firstHalf - 1;
 
@@ -185,7 +179,7 @@ public class Homework extends SuperKarel {
         moveWithBeeper(secondHalf, false);
     }
 
-    public void oddWithEven() {
+    public void divideOddWithEvenMap() {
         initializeVariable(isWidthEven);
         movesToReachStartPoint = firstHalf - 1;
 
@@ -206,26 +200,23 @@ public class Homework extends SuperKarel {
         moveWithBeeper(secondHalf, false);
     }
 
-    @Override
-    public void run() {
-        setBeepersInBag(1000);
-
+    public void divideMap() {
         width = 1;
         length = 1;
         totalNumberOfBeepers = 0;
         totalNumberOfMoves = 0;
         movesToReachStartPoint = 0;
 
-        calculateWidth();
-        calculateLength();
+        getDimensions();
 
         if (width < 7) throw new DimensionsTooSmallException("width");
         if (length < 7) throw new DimensionsTooSmallException("length");
 
         isWidthEven = width % 2 == 0;
-        isLengthEven = length % 2 == 0;
+        boolean isLengthEven = length % 2 == 0;
 
-        boxSideLength = Math.min(isWidthEven ? width - 3 : width - 2, isLengthEven ? length - 3 : length - 2);
+        boxSideLength = Math.min(isWidthEven ? width - 3 : width - 2,
+                isLengthEven ? length - 3 : length - 2);
 
         halfBoxSideLength = boxSideLength / 2;
         halfWidth = width / 2;
@@ -239,14 +230,21 @@ public class Homework extends SuperKarel {
         System.out.println("Box Side Length = " + boxSideLength);
 
         if (isLengthEven && isWidthEven) {
-            evenWithEven();
+            divideEvenWithEvenMap();
         } else if (!isWidthEven && !isLengthEven) {
-            oddWithOdd();
+            divideOddWithOddMap();
         } else {
-            oddWithEven();
+            divideOddWithEvenMap();
         }
         System.out.println("Total number of placed Beepers = " + totalNumberOfBeepers);
         System.out.println("Total number of Moves = " + (totalNumberOfMoves - movesToReachStartPoint));
         System.out.println("Total number of moves to reach the Start point = " + movesToReachStartPoint + "\n");
+    }
+
+    @Override
+    public void run() {
+        setBeepersInBag(1000);
+
+        divideMap();
     }
 }
