@@ -19,7 +19,7 @@ public class Homework extends SuperKarel {
     private int secondHalf;
     private int firstOutOfBox;
     private int secondOutOfBox;
-    private boolean showRepeatedPoints = false;
+    private boolean showRepeatedPoints = true;
 
     public void getDimensions() {
         while (frontIsClear()) {
@@ -130,9 +130,16 @@ public class Homework extends SuperKarel {
         }
     }
 
-    public void fillBoxSides(boolean halfBox, int turn) {
-        int numberOfMoves = halfBox ? boxSideLength / 2 : turn != 2 ? boxSideLength : boxSideLength - 1;
-        moveWithBeeper(numberOfMoves, false);
+    public void fillBoxSides(boolean isEven) {
+        moveWithBeeper(halfBoxSideLength, false);
+        turnLeft();
+
+        for (int i = 0; i < 3; i++) {
+            int numberOfMoves = isEven && i % 2 == 0 ? boxSideLength : boxSideLength - 1;
+            moveWithBeeper(numberOfMoves, false);
+            turnLeft();
+        }
+        moveWithBeeper(halfBoxSideLength, false);
         turnLeft();
     }
 
@@ -162,12 +169,7 @@ public class Homework extends SuperKarel {
         moveWithBeeper(firstOutOfBox, true);
 
         turnRight();
-
-        boolean halfBox = true;
-        for (int i = 0; i < 5; i++) {
-            fillBoxSides(halfBox, 2);
-            if (i == 0 || i == 3) halfBox = !halfBox;
-        }
+        fillBoxSides(false);
 
         moveWithBeeper(halfBoxSideLength, false);
         turnRight();
@@ -185,12 +187,8 @@ public class Homework extends SuperKarel {
 
         moveWithBeeper(firstOutOfBox, true);
         turnRight();
+        fillBoxSides(true);
 
-        boolean halfBox = true;
-        for (int i = 0; i < 5; i++) {
-            fillBoxSides(halfBox, i);
-            if (i == 0 || i == 3) halfBox = !halfBox;
-        }
         moveWithBeeper(halfBoxSideLength, false);
         turnRight();
         for (int i = 0; i < 2; i++) {
@@ -215,8 +213,7 @@ public class Homework extends SuperKarel {
         isWidthEven = width % 2 == 0;
         boolean isLengthEven = length % 2 == 0;
 
-        boxSideLength = Math.min(isWidthEven ? width - 3 : width - 2,
-                isLengthEven ? length - 3 : length - 2);
+        boxSideLength = Math.min(isWidthEven ? width - 3 : width - 2, isLengthEven ? length - 3 : length - 2);
 
         halfBoxSideLength = boxSideLength / 2;
         halfWidth = width / 2;
